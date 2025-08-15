@@ -4,6 +4,12 @@ body {
   display: flex;
   justify-content: center;
   padding-top: 50px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.dark-mode {
+  background-color: #121212;
+  color: white;
 }
 
 .container {
@@ -12,6 +18,19 @@ body {
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   width: 400px;
+}
+
+.dark-mode .container {
+  background-color: #1e1e1e;
+  color: white;
+}
+
+#themeToggle {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 
 h1 {
@@ -29,6 +48,12 @@ h1 {
   padding: 10px;
   border-radius: 4px;
   border: 1px solid #ccc;
+}
+
+.dark-mode .input-section input {
+  background-color: #2c2c2c;
+  color: white;
+  border: 1px solid #555;
 }
 
 #addTaskBtn {
@@ -85,6 +110,10 @@ li.overdue span.task-text {
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.75em;
+}
+
+.dark-mode .task-category {
+  background-color: #339af0;
 }
 
 button.delete-btn {
