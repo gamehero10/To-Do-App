@@ -3,37 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const dateInput = document.getElementById('dateInput');
   const categoryInput = document.getElementById('categoryInput');
   const addTaskBtn = document.getElementById('addTaskBtn');
-  const clearAllBtn = document.getElementById('clearAllBtn');
   const taskList = document.getElementById('taskList');
-  const themeToggle = document.getElementById('themeToggle');
-  const body = document.body;
 
   let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-  let darkMode = JSON.parse(localStorage.getItem('darkMode')) || false;
 
   function saveTasks() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }
-
-  function saveTheme() {
-    localStorage.setItem('darkMode', JSON.stringify(darkMode));
-  }
-
-  function applyTheme() {
-    if (darkMode) {
-      body.classList.add('dark-mode');
-      themeToggle.textContent = '☀️';
-    } else {
-      body.classList.remove('dark-mode');
-      themeToggle.textContent = '🌙';
-    }
-  }
-
-  themeToggle.addEventListener('click', () => {
-    darkMode = !darkMode;
-    applyTheme();
-    saveTheme();
-  });
 
   function renderTasks() {
     taskList.innerHTML = '';
@@ -41,19 +17,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tasks.forEach((task, index) => {
       const li = document.createElement('li');
+
       if (task.completed) li.classList.add('completed');
-      if (task.dueDate && task.dueDate < today && !task.completed) li.classList.add('overdue');
+      if (task.dueDate && task.dueDate < today && !task.completed) {
+        li.classList.add('overdue');
+      }
+
+      const taskInfo = document.createElement('div');
+      taskInfo.className = 'task-info';
 
       const taskText = document.createElement('span');
       taskText.className = 'task-text';
       taskText.textContent = task.text;
 
-      const meta = document.createElement('div');
-      meta.className = 'task-meta';
-      meta.innerHTML = `
-        <span>${task.dueDate || 'No due date'}</span>
-        <span>${task.category || 'No category'}</span>
-      `;
+      const taskMeta = document.createElement('div');
+      taskMeta.className = 'task-meta';
+
+      const due = document.createElement('span');
+      due.textContent = task.dueDate ? `Due: ${task.dueDate}` : 'No due date';
+
+      const category = document.createElement('span');
+      category.className = 'task-category';
+      category.textContent = task.category || 'Uncategorized';
+
+      taskMeta.appendChild(due);
+      taskMeta.appendChild(category);
+
+      taskInfo.appendChild(taskText);
+      taskInfo.appendChild(taskMeta);
 
       const controls = document.createElement('div');
       controls.innerHTML = `
@@ -61,8 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <button class="delete-btn" onclick="deleteTask(${index})">✗</button>
       `;
 
-      li.appendChild(taskText);
-      li.appendChild(meta);
+      li.appendChild(taskInfo);
       li.appendChild(controls);
       taskList.appendChild(li);
     });
@@ -86,14 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTasks();
   });
 
-  clearAllBtn.addEventListener('click', () => {
-    if (confirm('Are you sure you want to delete all tasks?')) {
-      tasks = [];
-      saveTasks();
-      renderTasks();
-    }
-  });
-
   window.deleteTask = function(index) {
     tasks.splice(index, 1);
     saveTasks();
@@ -106,6 +88,5 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTasks();
   };
 
-  applyTheme();
   renderTasks();
 });
